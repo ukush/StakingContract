@@ -1,5 +1,5 @@
 // @author - Uwais Kushi-Mohammed
-pragma solidity ^0.8.19;
+pragma solidity ^0.8.20;
 
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
@@ -10,7 +10,7 @@ contract DEFI is ERC20 {
     
     constructor() ERC20("DEFI", "DEFI") {
         // total supply as 1M DEFI tokens
-        _mint(address(this), 1000000);
+        _mint(msg.sender, 1000000);
     }
 
     function stake(uint256 amount) public {
@@ -23,7 +23,7 @@ contract DEFI is ERC20 {
 
         // only record the timestamp when amount exceeds 1000 which is when the rewards should 
         // start being calculated from
-        if (stakedTimestamp[msg.sender] == 0 && stakedAmount >= 1000) {
+        if (stakedTimestamp[msg.sender] == 0 && stakedAmount[msg.sender] >= 1000) {
             stakedTimestamp[msg.sender] = block.timestamp;
         }
 
@@ -45,6 +45,7 @@ contract DEFI is ERC20 {
         uint256 rewardPlusOriginal = reward + stakedAmount[msg.sender];
 
         // transfer this amount from the supply to the staker
+        require(balanceOf(address(this)) >= rewardPlusOriginal, "contract doesn't have enough");
         _transfer(address(this), msg.sender, rewardPlusOriginal);
 
         // update the mappings
