@@ -48,7 +48,7 @@ contract DEFI is ERC20 {
         _transfer(address(this), msg.sender, rewardPlusOriginal);
 
         // update the mappings
-        totalStaked[msg.sender] = 0;
+        stakedAmount[msg.sender] = 0;
         stakedTimestamp[msg.sender] = 0;
     }
 
